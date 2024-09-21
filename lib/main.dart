@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'publicaciones_list_page.dart';
+import 'presentation/create_post.dart';
+import 'presentation/publicaciones_list_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -51,9 +52,11 @@ class _PrimerWidgetState extends State<PrimerWidget> {
       body: const PublicacionesListPage(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            variable++;
-          });
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CreatePost(),
+            ),
+          );
         },
         child: const Icon(Icons.add),
       ),

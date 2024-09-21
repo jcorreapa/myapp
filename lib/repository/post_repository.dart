@@ -19,4 +19,13 @@ class PostRepository {
       return [];
     }
   }
+
+  Future<bool> createPost(PostModel model) async {
+    try {
+      final posts =  await _service.createPost(model);
+      return posts;
+    } catch (e) {
+      return false;
+    }
+  }
 }

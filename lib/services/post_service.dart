@@ -27,4 +27,24 @@ class PostService {
       throw Exception('Error al obtener las publicaciones');
     }
   }
+
+  Future<bool> createPost(PostModel postModel) async {
+    final data = {
+      {
+        "title": postModel.title,
+        "description": postModel.descripcion,
+        "rutaImagen": "https://picsum.photos/200",
+        "fecha": "hoy",
+        "comentarios": "",
+        "likes": "0"
+      }
+    };
+    final response = await _dio.post('/api/post', data: data);
+    print(response);
+    if (response.statusCode != 201) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 }

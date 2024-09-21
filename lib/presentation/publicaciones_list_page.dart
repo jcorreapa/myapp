@@ -1,12 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/post_model.dart';
 import 'package:myapp/repository/post_repository.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-final _postsProviders = FutureProvider.autoDispose<List<PostModel>>((ref) async {
+final postsProviders =
+    FutureProvider.autoDispose<List<PostModel>>((ref) async {
   await Future.delayed(const Duration(seconds: 2));
   final respository = ref.watch(respositoryProvider);
   return await respository.getPosts();
@@ -17,7 +16,7 @@ class PublicacionesListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final posts = ref.watch(_postsProviders);
+    final posts = ref.watch(postsProviders);
     return posts.when(
       data: (listaPublicaciones) {
         return ListView.builder(
