@@ -1,46 +1,39 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:myapp/models/post_model.dart';
+import 'package:myapp/repository/post_repository.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-class PublicacionesListPage extends StatelessWidget {
+final _postsProviders = FutureProvider.autoDispose<List<PostModel>>((ref) async {
+  await Future.delayed(const Duration(seconds: 2));
+  final respository = ref.watch(respositoryProvider);
+  return await respository.getPosts();
+});
+
+class PublicacionesListPage extends ConsumerWidget {
   const PublicacionesListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final listaPublicaciones = [
-      PostModel(
-        title: 'Publicación 1',
-        rutaImagen: 'https://picsum.photos/200',
-        fecha: DateTime.now(),
-        descripcion: 'Esta publicación si tiene descripcion',
-        comentarios: ['Comentario 1', 'Comentario 2'],
-        likes: 20,
-      ),
-      PostModel(
-        title: 'Publicación 2',
-        rutaImagen: 'https://picsum.photos/200',
-        fecha: DateTime(2020),
-        comentarios: ['Comentario 1', 'Comentario 2'],
-        likes: 20,
-      ),
-      PostModel(
-        title: 'Publicación 3',
-        rutaImagen: 'https://picsum.photos/200',
-        fecha: DateTime(2023, 12),
-        comentarios: ['Comentario 1', 'Comentario 2'],
-        likes: 20,
-      ),
-    ];
-    return ListView.builder(
-      itemCount: listaPublicaciones.length,
-      itemBuilder: (context, index) {
-        final publicacion = listaPublicaciones[index];
-        final isEven = index % 2 == 0;
-        return _PostWidget(publicacion: publicacion, isEven: isEven);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final posts = ref.watch(_postsProviders);
+    return posts.when(
+      data: (listaPublicaciones) {
+        return ListView.builder(
+          itemCount: listaPublicaciones.length,
+          itemBuilder: (context, index) {
+            final publicacion = listaPublicaciones[index];
+            final isEven = index % 2 == 0;
+            return _PostWidget(publicacion: publicacion, isEven: isEven);
+          },
+        );
       },
-    ); /* Text('Lista de publicaciones'); */
+      error: (error, _) => const Center(child: Text('Error')),
+      loading: () => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
   }
 }
 
